@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        font-family: Arial;
+        margin: 2px;
+        padding: 10px;
+        text-align: center;
+        position: flex;
+      }
+      body {
+        margin-top: 10%;
+      }
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+    <title>User Storage</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        $("#list").click(function () {
+          $.ajax({
+            url: "/api/list",
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json",
+
+            success: function (response) {
+              // $("#mytable").DataTable().clear().draw();
+              $("#mytable").empty();
+              // $("#mytable").DataTable().ajax.reload();
+              var trHTML = "";
+              $.each(response, function (i, item) {
+                trHTML +=
+                  "<tr>" +
+                  '<td><input type="text" name=" addmore[0][uuid]" id="uuid' +
+                  item.uuid +
+                  '"value="' +
+                  item.uuid +
+                  '"/></td>' +
+                  '<td><input type="text" name=" addmore[0][name]" id="name' +
+                  item.name +
+                  '" value="' +
+                  item.name +
+                  '"/></td>' +
+                  '<td><input type="text" name=" addmore[0][size]" id="size' +
+                  item.size +
+                  '" value="' +
+                  item.size +
+                  '"/></td>' +
+                  '<td><input type="text" name=" addmore[0][uploaded]" id="uploaded' +
+                  item.upload +
+                  '" value="' +
+                  item.uploaded +
+                  '"/></td>' +
+                  "</tr>";
+              });
+              $("#mytable").append(trHTML);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <h1>Storage API</h1>
+    <div>
+      <h2>Files</h2>
+      <button id="list">Get user files</button>
+      <table id="mytable" class="center">
+        <thead>
+          <tr>
+            <th>Uuid</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Data upload</th>
+          </tr>
+        </thead>
+        <!-- <tr> -->
+        <!--   <td> -->
+        <!--     <input type="text" name=" addmore[0][uuid]" id="uuid" /> -->
+        <!--   </td> -->
+        <!--   <td> -->
+        <!--     <input type="text" name="addmore[0][name]" id="name" /> -->
+        <!--   </td> -->
+        <!--   <td> -->
+        <!--     <input type="text" name="addmore[0][uploaded]" id="uploaded" /> -->
+        <!--   </td> -->
+        <!-- </tr> -->
+      </table>
+    </div>
+  </body>
+</html>

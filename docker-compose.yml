@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16.1-alpine3.18
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./data/db/schema/create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+    ports:
+      - 5432:5432
+  minio:
+    hostname: dev
+    image: minio/minio:RELEASE.2024-01-16T16-07-38Z
+    restart: always
+    command: server --console-address ":9001" /data/minio/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_KMS_SECRET_KEY: my-minio-key:OSMM+vkKUTCvQs9YL/CVMIMt43HFhkUpqJxTmGl6rYw=
+      MINIO_KMS_AUTO_ENCRYPTION: on
+    volumes:
+      - minio-data:/data/minio
+      - ./data/example/minio:/root/.minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+  create-minio-bucket:
+    image: minio/mc:RELEASE.2024-01-16T16-06-34Z
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio/ https://dev:9000 minioadmin minioadmin --insecure;
+      /usr/bin/mc rm -r --force myminio/store --insecure;
+      /usr/bin/mc mb myminio/store --insecure;
+      /usr/bin/mc policy download myminio/store --insecure;
+      /usr/bin/mc encrypt set sse-kms my-minio-key myminio/store --insecure;
+      exit 0;
+      "
+  storage-api:
+    image: s3-jwt-totp-backend:latest
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/metrics"]
+      interval: 30s
+      timeout: 45s
+      retries: 10
+    ports:
+      - 9090:9090
+volumes:
+  postgres:
+  minio-data:

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        font-family: Arial;
+        margin: 2px;
+        padding: 10px;
+        text-align: center;
+        position: flex;
+      }
+      body {
+        margin-top: 10%;
+      }
+    </style>
+    <title>User Storage</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        $("#button_reg").click(function () {
+          // let confirm_text = "Are you sure to send?";
+          // let confirm_result = confirm(confirm_text);
+          // if (confirm_result !== true) {
+          //   alert("Canceled");
+          //   return;
+          // }
+
+          let transaction_data = {
+            mail: $("#mail").val(),
+            password: $("#password").val(),
+            passwordConfirm: $("#passwordConfirm").val(),
+          };
+
+          $.ajax({
+            url: "/api/signup",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(transaction_data),
+
+            success: function (response) {
+              console.info(response);
+              if (response.message == "fail") {
+                alert("Send fail");
+                alert(response);
+              } else {
+                alert("Send success");
+                $("#verify_mail").text(response.message);
+              }
+            },
+            error: function (response) {
+              console.log(response);
+              console.error(response);
+              alert("Send failed");
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <h1>Storage API</h1>
+    <div>
+      <h2>Sing Up</h2>
+      <p>Username</p>
+      <input id="mail" type="text" placeholder="Enter Username" required />
+
+      <p>Password</p>
+      <input
+        id="password"
+        type="text"
+        style="-webkit-text-security: circle"
+        placeholder="Enter Password"
+        required
+      />
+
+      <p>Confirm Password</p>
+      <input
+        id="passwordConfirm"
+        type="text"
+        style="-webkit-text-security: circle"
+        placeholder="Enter Password"
+        required
+      />
+      <br />
+      <br />
+      <button id="button_reg">Register</button>
+      <div id="verify_mail"></div>
+    </div>
+  </body>
+</html>

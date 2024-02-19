@@ -1,0 +1,413 @@
+basePath: /api
+definitions:
+  api.filesResponse:
+    properties:
+      name:
+        type: string
+      size:
+        type: integer
+      uploaded:
+        type: string
+      uuid:
+        type: string
+    type: object
+  api.oTPResponse:
+    properties:
+      mail:
+        type: string
+      otp_uri:
+        type: string
+    type: object
+  api.response:
+    properties:
+      message:
+        type: string
+    type: object
+  api.signInInput:
+    properties:
+      mail:
+        type: string
+      otp_pin:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - mail
+    - otp_pin
+    - password
+    type: object
+  api.signUpInput:
+    properties:
+      mail:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      passwordConfirm:
+        minLength: 8
+        type: string
+    required:
+    - mail
+    - password
+    - passwordConfirm
+    type: object
+  api.userResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      mail:
+        type: string
+      verified:
+        type: boolean
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: xor111xor@hotmail.com
+    name: API Support
+    url: https://github.com/xor111xor/s3-jwt-totp-backend
+  description: REST API server of storage with auth .
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Server storage API
+  version: "1.0"
+paths:
+  /delete/{uuid}:
+    delete:
+      consumes:
+      - multipart/form-data
+      description: Delete file
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: file uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteFile
+      tags:
+      - Files
+  /download/{uuid}:
+    get:
+      consumes:
+      - multipart/form-data
+      description: Download file
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: file uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: DownloadFile
+      tags:
+      - Files
+  /list:
+    get:
+      consumes:
+      - application/json
+      description: List all files
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.filesResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: ListFiles
+      tags:
+      - Files
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: Logout from system
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: SignOut
+      tags:
+      - Users
+  /signin:
+    get:
+      consumes:
+      - application/json
+      description: Sign in users
+      parameters:
+      - description: Sign in info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      summary: SignIn
+      tags:
+      - Users
+  /singup:
+    get:
+      consumes:
+      - application/json
+      description: Create user account
+      parameters:
+      - description: Sign up info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.signUpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      summary: SingUp
+      tags:
+      - Users
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: this is a test file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: UploadFile
+      tags:
+      - Files
+  /verifymail/{verificationCode}:
+    get:
+      consumes:
+      - application/json
+      description: Check user mail
+      parameters:
+      - description: Verification code from mail
+        in: path
+        name: verificationCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.oTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      summary: Verify mail
+      tags:
+      - Users
+  /whoami:
+    get:
+      consumes:
+      - application/json
+      description: Get user info
+      parameters:
+      - description: token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.response'
+      security:
+      - ApiKeyAuth: []
+      summary: UserWhoami
+      tags:
+      - Users
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

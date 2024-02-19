@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        font-family: Arial;
+        margin: 2px;
+        padding: 10px;
+        text-align: center;
+        position: flex;
+      }
+      body {
+        margin-top: 10%;
+      }
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+    <title>User Storage</title>
+  </head>
+  <body>
+    <h1>Storage API</h1>
+    <div class="file-upload">
+      <div class="file-upload__area">
+        <h2>File Upload</h2>
+        <input type="file" name="" id="single_file_upload" max="1" />
+      </div>
+    </div>
+    <script>
+      //   Upload Single Image
+      document
+        .getElementById("single_file_upload")
+        .addEventListener("change", async (event) => {
+          let formData = new FormData();
+          formData.append("file", event.target.files[0]);
+          const data = await fetch("/api/upload", {
+            body: formData,
+            method: "POST",
+          }).then((res) => res.json());
+        });
+    </script>
+  </body>
+</html>

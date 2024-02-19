@@ -1,0 +1,29 @@
+pg_config = "postgres://postgres:password@postgres:5432/store"
+
+service_ip =  "127.0.0.1"
+service_schema =  "http"
+service_port =  "9090"
+service_path_api = "api"
+service_path_ui = "ui"
+
+metrics_scrape_sec = 60
+
+email_from =  "sender@mail.com"
+smtp_host =     "mail.com"
+smtp_pass =     "chaijahsuShaelooPowie3po"
+smtp_port =     587
+smtp_user =     "sender@mail.com"
+
+token_expired_in = "10m"
+token_maxage = "10"
+token_secret = "Vae4thiethiez2va8ye7ee6M"
+
+file_max_size = "33554432"
+file_tmp_path = "/tmp/store"
+
+s3_endpoint = "minio:9000"
+s3_access_key_id = "minioadmin"
+s3_secret_access_key = "minioadmin"
+s3_encrypt_passwd = "oJieghiequ0Fohjae4yi0ohC"
+s3_bucket = "store"
+s3_enable_ssl = true
